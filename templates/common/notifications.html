@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-3xl mx-auto py-4">
+
+    <h2 class="text-2xl font-semibold mb-4">Notifications</h2>
+
+    {% for n in notifications %}
+        <div class="bg-white shadow p-4 rounded mb-2">
+            <p>{{ n.message }}</p>
+            {% if n.link %}
+                <a href="{{ n.link }}" class="text-blue-600 underline">Open</a>
+            {% endif %}
+            <p class="text-gray-400 text-sm">{{ n.created_at }}</p>
+        </div>
+    {% empty %}
+        <p>No notifications found.</p>
+    {% endfor %}
+
+</div>
+{% endblock %}

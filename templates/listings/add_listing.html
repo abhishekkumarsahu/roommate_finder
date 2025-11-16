@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-8 shadow rounded">
+
+    <h2 class="text-2xl font-bold mb-4">Add a New Room</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="grid gap-4">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <label class="block font-semibold">Photos</label>
+        <input type="file" name="images" multiple class="p-2 border rounded">
+
+        <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+            Submit for Approval
+        </button>
+    </form>
+
+</div>
+{% endblock %}

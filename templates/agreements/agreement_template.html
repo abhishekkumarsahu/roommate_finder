@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Room Agreement</title>
+  <style>
+    body { font-family: sans-serif; line-height: 1.4; margin: 40px; }
+    h1 { text-align: center; }
+    .parties { margin-top: 20px; }
+    .section { margin-top: 18px; }
+    .clause { margin-top: 8px; }
+    .signature { margin-top: 60px; }
+  </style>
+</head>
+<body>
+  <h1>Room Agreement</h1>
+
+  <p><strong>Listing:</strong> {{ listing.title }}</p>
+  <p><strong>Address:</strong> {{ listing.address }}</p>
+
+  <div class="parties">
+    <p><strong>Owner:</strong> {{ owner.full_name }}</p>
+    <p><strong>Owner Aadhaar:</strong> {{ mask_aadhaar(owner.aadhaar_number) }}</p>
+
+    <p><strong>Tenant:</strong> {{ tenant.full_name }}</p>
+    <p><strong>Tenant Aadhaar:</strong> {{ mask_aadhaar(tenant.aadhaar_number) }}</p>
+  </div>
+
+  <div class="section">
+    <p><strong>Rent:</strong> {{ agreement.rent }}</p>
+    <p><strong>Deposit:</strong> {{ agreement.deposit }}</p>
+    <p><strong>Start Date:</strong> {{ agreement.start_date }}</p>
+    <p><strong>End Date:</strong> {{ agreement.end_date }}</p>
+  </div>
+
+  <div class="section">
+    <h3>Clauses</h3>
+    <div class="clause">{{ agreement.clauses|linebreaks }}</div>
+  </div>
+
+  <div class="signature">
+    <p>__________________________</p>
+    <p>Owner signature</p>
+
+    <p style="margin-top:40px">__________________________</p>
+    <p>Tenant signature</p>
+  </div>
+</body>
+</html>

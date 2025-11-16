@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-4">
+
+    <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- My Listings -->
+        <div class="bg-white shadow rounded p-4">
+            <h3 class="font-semibold text-xl mb-2">My Listings</h3>
+            <a href="/listings/add/" class="text-blue-600 underline">Add New Listing</a>
+            <hr class="my-2">
+            {% for l in listings %}
+                <div class="p-2 border-b">
+                    <p class="font-medium">{{ l.title }}</p>
+                    <p class="text-sm text-gray-600">₹{{ l.rent }}</p>
+                </div>
+            {% empty %}
+                <p>No listings yet.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Chats -->
+        <div class="bg-white shadow rounded p-4">
+            <h3 class="font-semibold text-xl mb-2">Chats</h3>
+            <a href="/chat/inbox/" class="text-blue-600 underline">Open Chat</a>
+        </div>
+
+        <!-- Agreements -->
+        <div class="bg-white shadow rounded p-4">
+            <h3 class="font-semibold text-xl mb-2">Agreements</h3>
+            {% for a in agreements %}
+                <p><a href="/agreements/view/{{ a.id }}/" class="text-blue-600 underline">
+                    {{ a.listing.title }}
+                </a></p>
+            {% empty %}
+                <p>No agreements yet.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

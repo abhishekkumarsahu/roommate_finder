@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-4">
+
+    <h2 class="text-3xl font-bold mb-6">Find Rooms Near You</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% for listing in listings %}
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+
+            <!-- Image -->
+            {% if listing.images.first %}
+                <img src="{{ listing.images.first.image.url }}"
+                     class="h-48 w-full object-cover">
+            {% else %}
+                <div class="h-48 bg-gray-200 flex items-center justify-center">
+                    <span class="text-gray-500">No Image</span>
+                </div>
+            {% endif %}
+
+            <!-- Content -->
+            <div class="p-4">
+                <h3 class="font-semibold text-lg">{{ listing.title }}</h3>
+
+                <p class="text-gray-600">₹{{ listing.rent }} / month</p>
+
+                {% if listing.distance %}
+                <p class="text-sm text-gray-500">{{ listing.distance|floatformat:2 }} km away</p>
+                {% endif %}
+
+                <p class="text-gray-500 mt-2 line-clamp-2">{{ listing.description }}</p>
+
+                <div class="mt-4 flex justify-between items-center">
+                    <a href="/listings/{{ listing.id }}/"
+                       class="text-blue-600 font-semibold">View</a>
+
+                    <a href="/chat/create/{{ listing.id }}/"
+                       class="bg-blue-600 text-white px-3 py-1 rounded shadow hover:bg-blue-700">
+                        I’m Interested
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        {% empty %}
+            <p>No listings available.</p>
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}
