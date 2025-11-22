@@ -1,1 +1,46 @@
-<!-- <a href="{% url 'agreements:start_agreement' inquiry.id %}">Proceed to Agreement</a> -->
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto p-6">
+    <h2 class="text-2xl font-bold mb-4">Chats / Interests</h2>
+
+    {% for inquiry in inquiries %}
+        <div class="p-4 bg-white shadow rounded mb-3">
+
+            <p class="font-bold text-lg">
+                {{ inquiry.listing.title }}
+            </p>
+
+            <p class="text-gray-600">
+                With:
+                {% if inquiry.from_user == user %}
+                    {{ inquiry.to_user.full_name }}
+                {% else %}
+                    {{ inquiry.from_user.full_name }}
+                {% endif %}
+            </p>
+
+            <div class="flex gap-4 mt-3">
+
+                <!-- Open Chat -->
+                <a href="{% url 'chat:chat_room' inquiry.id %}"
+                   class="text-blue-600 underline">
+                    Open Chat
+                </a>
+
+                <!-- Agreement Button -->
+                {% if inquiry.status == 'in_chat' %}
+                <a href="{% url 'agreements:start_agreement' inquiry.id %}"
+                   class="text-green-700 underline">
+                    Create Agreement
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    {% empty %}
+        <p>No interactions yet.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

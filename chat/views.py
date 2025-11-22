@@ -54,6 +54,12 @@ def chat_room(request, inquiry_id):
     if request.user not in [inquiry.from_user, inquiry.to_user]:
         messages.error(request, "You are not allowed to view this chat.")
         return redirect('chat:inbox')
+    
+    # Determine the other user
+    if request.user == inquiry.from_user:
+        other_user = inquiry.to_user
+    else:
+        other_user = inquiry.from_user
 
     if request.method == 'POST':
         msg_text = request.POST.get('message')
@@ -65,7 +71,7 @@ def chat_room(request, inquiry_id):
             )
 
             # 🔔 SEND NOTIFICATION TO THE OTHER USER
-            other_user = inquiry.owner if request.user == inquiry.tenant else inquiry.tenant
+            # other_user = inquiry.owner if request.user == inquiry.tenant else inquiry.tenant
 
             notify(
                 user=other_user,
@@ -73,12 +79,14 @@ def chat_room(request, inquiry_id):
                 link=f"/chat/room/{inquiry.id}/"
             )
 
+            return redirect('chat:chat_room', inquiry_id=inquiry.id)
 
     messages_list = inquiry.messages.all().order_by('timestamp')
 
     return render(request, 'chat/chat_room.html', {
         'inquiry': inquiry,
-        'messages': messages_list
+        'messages': messages_list,
+        # 'other_user': other_user
     })
 
     

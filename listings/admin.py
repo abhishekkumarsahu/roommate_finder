@@ -1,27 +1,3 @@
-# from django.contrib import admin
-# from .models import Listing, ListingImage
-# from common.utils import notify
-
-# class ListingImageInline(admin.TabularInline):
-#     model = ListingImage
-#     extra = 1
-
-# @admin.register(Listing)
-# class ListingAdmin(admin.ModelAdmin):
-#     list_display = ('title', 'owner', 'rent', 'status')
-#     list_filter = ('status',)
-#     inlines = [ListingImageInline]
-
-#     actions = ['approve_listings', 'reject_listings']
-
-#     def approve_listings(self, request, queryset):
-#         queryset.update(status='approved')
-#     approve_listings.short_description = "Approve selected listings"
-
-#     def reject_listings(self, request, queryset):
-#         queryset.update(status='rejected')
-#     reject_listings.short_description = "Reject selected listings"
-
 from django.contrib import admin
 from .models import Listing, ListingImage
 from common.utils import notify

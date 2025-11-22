@@ -38,6 +38,8 @@ def signup_view(request):
             return redirect('accounts:login')
     else:
         form = SignupForm()
+        print("FORM ERRORS:", form.errors)
+
     return render(request, 'accounts/signup.html', {'form': form})
 
 # Email activation
@@ -58,24 +60,61 @@ def activate_account(request, uidb64, token):
         return redirect('accounts:signup')
 
 # Login view
+# def login_view(request):
+#     if request.method == 'POST':
+#         form = LoginForm(request, data=request.POST)
+#         if form.is_valid():
+#             email = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password')
+#             user = authenticate(email=email, password=password)
+#             if user is not None:
+#                 if user.verification_status == 'verified':
+#                     login(request, user)
+#                     return redirect('accounts:profile')
+#                 else:
+#                     messages.warning(request, 'Your account is pending admin verification.')
+#             else:
+#                 messages.error(request, 'Invalid credentials.')
+#     else:
+#         form = LoginForm()
+#     return render(request, 'accounts/login.html', {'form': form})
+
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
+
         if form.is_valid():
             email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(email=email, password=password)
+
+            # If you use EMAIL as username
+            user = authenticate(request, username=email, password=password)
+
             if user is not None:
+                # Check verification status
                 if user.verification_status == 'verified':
                     login(request, user)
+                    messages.success(request, 'Login successful!')
                     return redirect('accounts:profile')
                 else:
                     messages.warning(request, 'Your account is pending admin verification.')
+                    return redirect('accounts:login')
             else:
                 messages.error(request, 'Invalid credentials.')
+                return redirect('accounts:login')
+
+        else:
+            # AuthenticationForm returns errors here
+            errors = form.non_field_errors()
+            for error in errors:
+                messages.error(request, error)
+            return redirect('accounts:login')
+
     else:
         form = LoginForm()
+
     return render(request, 'accounts/login.html', {'form': form})
+
 
 # Logout
 def logout_view(request):

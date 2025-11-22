@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-5xl mx-auto bg-white p-6 shadow rounded">
+
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-4">{{ listing.title }}</h1>
+
+    <!-- Image Gallery -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        {% for img in listing.images.all %}
+            <img src="{{ img.image.url }}" 
+                 class="w-full h-72 object-cover rounded shadow">
+        {% empty %}
+            <div class="h-72 bg-gray-200 flex items-center justify-center rounded">
+                <span>No Images Available</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Price Section -->
+    <div class="mb-8">
+        <p class="text-2xl font-semibold text-blue-700">₹{{ listing.rent }} / month</p>
+        <p class="text-lg text-gray-600">Deposit: ₹{{ listing.deposit }}</p>
+
+        <span class="mt-2 inline-block px-4 py-1 rounded bg-yellow-400 text-black">
+            {{ listing.status|title }}
+        </span>
+    </div>
+
+    <!-- About Room -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-2">Room Description</h2>
+        <p class="text-gray-700 leading-relaxed">{{ listing.description }}</p>
+    </div>
+
+    <!-- Preferences -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-2">Preferred Tenant</h2>
+        <p>Gender: <strong>{{ listing.preferred_gender|title }}</strong></p>
+        {% if listing.preferred_occupation %}
+            <p>Occupation: <strong>{{ listing.preferred_occupation }}</strong></p>
+        {% endif %}
+    </div>
+
+    <!-- Amenities -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-3">Amenities</h2>
+        <div class="flex flex-wrap gap-2">
+            {% for item in listing.amenities %}
+                <span class="px-3 py-1 bg-gray-200 rounded">{{ item|title }}</span>
+            {% empty %}
+                <span>No amenities added.</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Owner Information -->
+    <div class="mb-8 bg-gray-50 p-4 rounded border">
+        <h2 class="text-xl font-semibold mb-2">Owner Details</h2>
+        <p>Name: {{ listing.owner.full_name }}</p>
+        <p>Email: {{ listing.owner.email }}</p>
+        <p>Phone: {{ listing.owner.phone }}</p>
+    </div>
+
+    <!-- Contact Buttons -->
+    <div class="flex gap-4">
+        <a href="/chat/create/{{ listing.id }}/"
+           class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700">
+            I'm Interested
+        </a>
+
+        <a href="javascript:history.back()"
+           class="px-6 py-2 bg-gray-300 rounded hover:bg-gray-400">
+            Go Back
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

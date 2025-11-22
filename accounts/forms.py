@@ -3,8 +3,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import CustomUser
 
 class SignupForm(UserCreationForm):
-    aadhaar_number = forms.CharField(max_length=20, required=True)
-    aadhaar_document = forms.FileField(required=True)
+    aadhaar_number = forms.CharField(max_length=20, required=False)
+    aadhaar_document = forms.FileField(required=False)
 
     class Meta:
         model = CustomUser

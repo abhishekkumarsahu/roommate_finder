@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -10,6 +10,11 @@ def add_listing(request):
     if request.method == 'POST':
         form = ListingForm(request.POST)
         files = request.FILES.getlist('images')
+
+        if not files:
+            messages.error(request, "Please upload at least one image.")
+            return render(request, 'listings/add_listing.html', {'form': form})
+
 
         if form.is_valid():
             listing = form.save(commit=False)
@@ -51,3 +56,10 @@ def home(request):
         listings = sorted(listings, key=lambda x: x.distance)
 
     return render(request, 'listings/home.html', {'listings': listings})
+
+def listing_detail(request, listing_id):
+    listing = get_object_or_404(Listing, id=listing_id)
+
+    return render(request, 'listings/listing_detail.html', {
+        'listing': listing
+    })

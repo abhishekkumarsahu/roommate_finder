@@ -144,3 +144,9 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# Email connection
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

@@ -1,1 +1,64 @@
-<!-- <a href="{% url 'agreements:start_agreement' inquiry.id %}">Proceed to Agreement</a> -->
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-4">
+
+    <h2 class="text-3xl font-bold mb-6">My Listings</h2>
+
+    <a href="{% url 'listings:add_listing' %}"
+       class="bg-blue-600 text-white px-4 py-2 rounded mb-6 inline-block">
+        + Add New Listing
+    </a>
+
+    <!-- Listings Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% for listing in listings %}
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+
+            <!-- Image -->
+            {% if listing.images.first %}
+                <img src="{{ listing.images.first.image.url }}"
+                     class="h-48 w-full object-cover">
+            {% else %}
+                <div class="h-48 bg-gray-200 flex items-center justify-center">
+                    <span class="text-gray-500">No Image</span>
+                </div>
+            {% endif %}
+
+            <!-- Body -->
+            <div class="p-4">
+
+                <h3 class="font-semibold text-lg">{{ listing.title }}</h3>
+                <p class="text-gray-700">₹{{ listing.rent }}</p>
+
+                <!-- Status -->
+                <span class="inline-block mt-2 px-2 py-1 text-xs text-white rounded 
+                    {% if listing.status == 'approved' %} bg-green-600
+                    {% elif listing.status == 'pending' %} bg-yellow-500
+                    {% elif listing.status == 'rejected' %} bg-red-600
+                    {% else %} bg-gray-600 {% endif %}">
+                    {{ listing.status|capfirst }}
+                </span>
+
+                <div class="mt-4 flex justify-between items-center">
+                    <a href="/listings/{{ listing.id }}/"
+                       class="text-blue-600 underline">View</a>
+
+                    {% comment %}
+                    Agreement button disabled — prevents NoReverseMatch
+                    <a href="{% url 'agreements:start_agreement' inquiry.id %}">Agreement</a>
+                    {% endcomment %}
+                </div>
+
+            </div>
+        </div>
+        {% empty %}
+            <p>No listings added yet.</p>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
