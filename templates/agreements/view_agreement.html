@@ -1,13 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="max-w-3xl mx-auto p-6">
-  <h2>Agreement #{{ agreement.id }}</h2>
 
-  {% if agreement.pdf_file %}
-    <a href="{% url 'agreements:download' agreement.id %}" class="bg-green-600 text-white px-4 py-2 rounded">Download PDF</a>
-    <iframe src="{{ agreement.pdf_file.url }}" width="100%" height="600px" class="mt-4"></iframe>
-  {% else %}
-    <p>PDF not generated yet. Both parties need to submit the agreement details.</p>
-  {% endif %}
+<div class="max-w-5xl mx-auto bg-white p-8 shadow rounded">
+
+    <h2 class="text-3xl font-bold mb-4">Agreement #{{ agreement.id }}</h2>
+
+    {% if agreement.pdf_file %}
+        <a href="{{ agreement.pdf_file.url }}" 
+           target="_blank"
+           class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+           Open Full PDF
+        </a>
+
+        <div class="mt-6 border rounded overflow-hidden shadow">
+
+            <embed
+                src="{{ agreement.pdf_file.url }}#toolbar=1&navpanes=1&scrollbar=1"
+                type="application/pdf"
+                width="100%"
+                height="900px"
+                style="border:none;">
+        </div>
+
+    {% else %}
+        <p class="text-gray-600 text-lg">PDF not generated yet.</p>
+    {% endif %}
+
 </div>
+
 {% endblock %}

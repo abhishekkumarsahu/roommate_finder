@@ -1,51 +1,161 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 
-<div class="max-w-6xl mx-auto px-4">
+<div class="max-w-7xl mx-auto px-4 mt-6">
 
-    <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
+    <!-- PAGE HEADING -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-3xl font-bold text-gray-800">Dashboard</h2>
 
+        <a href="{% url 'accounts:profile' %}"
+           class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+            Edit Profile
+        </a>
+    </div>
+
+    <!-- TOP STATS -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+        <div class="bg-white rounded-xl shadow p-6 border border-gray-200">
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-100 text-blue-600 p-3 rounded-lg">
+                    <i class="fa fa-home text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Total Listings</p>
+                    <p class="text-2xl font-bold">{{ listings.count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow p-6 border border-gray-200">
+            <div class="flex items-center gap-4">
+                <div class="bg-green-100 text-green-600 p-3 rounded-lg">
+                    <i class="fa fa-comments text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Active Chats</p>
+                    <p class="text-2xl font-bold">{{ inquiries.count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow p-6 border border-gray-200">
+            <div class="flex items-center gap-4">
+                <div class="bg-purple-100 text-purple-600 p-3 rounded-lg">
+                    <i class="fa fa-file-signature text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Agreements</p>
+                    <p class="text-2xl font-bold">{{ agreements.count }}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MAIN GRID -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <!-- My Listings -->
-        <div class="bg-white shadow rounded p-4">
-            <h3 class="font-semibold text-xl mb-2">My Listings</h3>
-            <!-- <a href="/listings/add/" class="text-blue-600 underline">Add New Listing</a> -->
-            <a href="{% url 'listings:add_listing' %}" class="text-blue-600 underline">
-                Add New Listing
-            </a>
+        <!-- MY LISTINGS -->
+        <div class="bg-white rounded-xl shadow p-6 border border-gray-200">
 
-            <hr class="my-2">
-            {% for l in listings %}
-            <div class="p-2 border-b">
-                <p class="font-medium">{{ l.title }}</p>
-                <p class="text-sm text-gray-600">₹{{ l.rent }}</p>
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-xl font-semibold">My Listings</h3>
+                <a href="{% url 'listings:add_listing' %}"
+                   class="text-blue-600 hover:text-blue-800 underline">+ Add Listing</a>
             </div>
-            {% empty %}
-            <p>No listings yet.</p>
-            {% endfor %}
+
+            <div class="divide-y">
+
+                {% for l in listings %}
+                <div class="py-3 hover:bg-gray-50 transition flex justify-between">
+                    <div>
+                        <p class="font-medium">{{ l.title }}</p>
+                        <p class="text-gray-500 text-sm">₹{{ l.rent }}</p>
+                    </div>
+
+                    <a href="/listings/{{ l.id }}/"
+                       class="text-blue-500 hover:text-blue-700 text-sm underline">
+                        View
+                    </a>
+                </div>
+                {% empty %}
+                <p class="text-gray-600 text-sm">No listings yet.</p>
+                {% endfor %}
+            </div>
         </div>
 
-        <!-- Chats -->
-        <div class="bg-white shadow rounded p-4">
-            <h3 class="font-semibold text-xl mb-2">Chats</h3>
-            <a href="/chat/inbox/" class="text-blue-600 underline">Open Chat</a>
+        <!-- CHATS -->
+        <div class="bg-white rounded-xl shadow p-6 border border-gray-200">
+
+            <h3 class="text-xl font-semibold mb-3">Recent Chats</h3>
+
+            <div class="space-y-3">
+
+                {% for i in inquiries|slice:":3" %}
+                <div 
+                    onclick="window.location.href='{% url 'chat:chat_room' i.id %}'"
+                    class="p-3 rounded-md border hover:shadow-md cursor-pointer transition">
+
+                    <p class="font-medium">{{ i.listing.title }}</p>
+                    <p class="text-gray-600 text-sm">
+                        With: 
+                        {% if i.from_user == user %}
+                            {{ i.to_user.full_name }}
+                        {% else %}
+                            {{ i.from_user.full_name }}
+                        {% endif %}
+                    </p>
+                </div>
+                {% empty %}
+                <p class="text-gray-600 text-sm">No chats yet.</p>
+                {% endfor %}
+
+            </div>
+
+            <a href="/chat/inbox/"
+               class="block mt-4 text-blue-600 underline text-center hover:text-blue-800">
+               View All Chats
+            </a>
         </div>
 
-        <!-- Agreements -->
-        <div class="bg-white shadow rounded p-4">
-            <h3 class="font-semibold text-xl mb-2">Agreements</h3>
-            {% for a in agreements %}
-            <p><a href="/agreements/view/{{ a.id }}/" class="text-blue-600 underline">
-                    {{ a.listing.title }}
-                </a></p>
-            {% empty %}
-            <p>No agreements yet.</p>
-            {% endfor %}
+        <!-- AGREEMENTS -->
+        <div class="bg-white rounded-xl shadow p-6 border border-gray-200">
+
+            <h3 class="text-xl font-semibold mb-3">Agreements</h3>
+
+            <div class="space-y-3">
+
+                {% for a in agreements %}
+                <div class="p-3 rounded-md border hover:bg-gray-50 flex justify-between">
+                    <p class="font-medium">{{ a.listing.title }}</p>
+
+                    <a href="/agreements/view/{{ a.id }}/"
+                       class="text-blue-600 hover:text-blue-800 text-sm underline">
+                        View
+                    </a>
+                </div>
+                {% empty %}
+                <p class="text-gray-600 text-sm">No agreements yet.</p>
+                {% endfor %}
+
+            </div>
         </div>
 
     </div>
 
 </div>
+
+<!-- Optional: Light fade-in animation -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".fade").forEach(el => {
+        el.style.opacity = 0;
+        setTimeout(() => { el.style.transition = "opacity .7s"; el.style.opacity = 1; }, 100);
+    });
+});
+</script>
 
 {% endblock %}

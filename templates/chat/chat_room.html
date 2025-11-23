@@ -1,40 +1,187 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="max-w-2xl mx-auto bg-white shadow rounded p-4">
+<style>
+/* Chat container */
+.chat-wrapper {
+    max-width: 750px;
+    margin: auto;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    padding: 20px;
+}
 
-    <h2 class="text-xl font-semibold mb-4">Chat</h2>
+/* Header */
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f1f1;
+}
 
-    <div class="h-80 overflow-y-scroll border p-3 bg-gray-50">
+.chat-header img {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.chat-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* Chat messages area */
+.messages-box {
+    height: 450px;
+    overflow-y: auto;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+.msg-row {
+    margin-bottom: 14px;
+    display: flex;
+}
+
+.msg-sent { justify-content: flex-end; }
+.msg-received { justify-content: flex-start; }
+
+/* Message bubble */
+.bubble {
+    max-width: 65%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    position: relative;
+    font-size: 14px;
+    line-height: 1.3;
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Sent (you) */
+.bubble.sent {
+    background: #1e60ff;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+/* Received (other) */
+.bubble.received {
+    background: #e5e7eb;
+    color: #111827;
+    border-bottom-left-radius: 4px;
+}
+
+/* Time small text inside bubble */
+.time {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-left: 8px;
+    display: inline-block;
+    float: right;
+    margin-top: 3px;
+}
+
+/* Input row */
+.input-row {
+    display: flex;
+    margin-top: 12px;
+    gap: 10px;
+}
+
+.chat-input {
+    flex: 1;
+    border: 1px solid #d1d5db;
+    padding: 12px;
+    border-radius: 25px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.chat-input:focus {
+    border-color: #1e60ff;
+    box-shadow: 0 0 0 3px rgba(30,96,255,0.15);
+}
+
+.send-btn {
+    background: #1e60ff;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.send-btn:hover {
+    background: #134dcc;
+}
+
+/* Smooth appearance */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+
+<div class="chat-wrapper">
+
+    <!-- HEADER -->
+    <div class="chat-header">
+        <img src="https://ui-avatars.com/api/?name={{ other_user.full_name|urlencode }}" 
+             onclick="window.location.href='/accounts/profile/'">
+
+        <h3 onclick="window.location.href='/accounts/profile/{{ other_user.id }}/'">
+            {{ other_user.full_name }}
+        </h3>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="messages-box" id="chatBox">
 
         {% for msg in messages %}
-            <div class="mb-2 {% if msg.sender == user %}text-right{% endif %}">
-                <p class="inline-block px-3 py-2 rounded-lg 
-                    {% if msg.sender == user %}
-                        bg-blue-600 text-white
-                    {% else %}
-                        bg-gray-200
-                    {% endif %}">
+            <div class="msg-row {% if msg.sender == user %}msg-sent{% else %}msg-received{% endif %}">
+                <div class="bubble {% if msg.sender == user %}sent{% else %}received{% endif %}">
                     {{ msg.text }}
-                </p>
+                    <span class="time">{{ msg.timestamp|date:"H:i" }}</span>
+                </div>
             </div>
         {% endfor %}
 
     </div>
 
-    <form method="POST" class="flex mt-3">
+    <!-- INPUT -->
+    <form method="POST" class="input-row">
         {% csrf_token %}
-        <input name="message" class="flex-1 border rounded p-2" placeholder="Type a message...">
-        <button class="ml-2 bg-blue-600 text-white px-4 rounded">Send</button>
+        <input name="message" class="chat-input" placeholder="Type a message..." autocomplete="off">
+        <button class="send-btn">Send</button>
     </form>
 
-        <div class="mt-4">
+    <div class="text-center mt-4">
         <a href="{% url 'agreements:start_agreement' inquiry.id %}"
            class="text-blue-600 underline">
-            Create Agreement
+            📄 Create Agreement
         </a>
     </div>
+
 </div>
 
-{% endblock %}
 
+<!-- AUTO SCROLL JS -->
+<script>
+    function scrollBottom() {
+        const box = document.getElementById("chatBox");
+        box.scrollTo({ top: box.scrollHeight, behavior: "smooth" });
+    }
+    scrollBottom();
+</script>
+
+{% endblock %}

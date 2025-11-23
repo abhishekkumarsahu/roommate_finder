@@ -1,38 +1,371 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="max-w-3xl mx-auto bg-white p-8 shadow rounded">
+{% load crispy_forms_tags %}
 
-    <h2 class="text-2xl font-bold mb-4">Add a New Room</h2>
+<div class="max-w-4xl mx-auto py-8 px-4">
 
-    <form method="POST" enctype="multipart/form-data" class="grid gap-4">
-        {% csrf_token %}
+    <!-- Title -->
+    <div class="mb-6">
+        <h2 class="text-3xl font-extrabold text-gray-900">Add a New Room</h2>
+        <p class="text-gray-600 mt-1">Create a listing — your listing will be submitted for admin approval.</p>
+    </div>
 
-        <!-- Show form errors -->
-        {% if form.errors %}
-        <div class="bg-red-100 border border-red-300 text-red-700 p-3 rounded">
-            <strong>There were errors:</strong>
-            <ul class="mt-2 ml-4 list-disc text-sm">
-                {% for field in form %}
-                {% for error in field.errors %}
-                <li>{{ field.label }}: {{ error }}</li>
-                {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
+    <!-- Server-side flash messages (kept at top) -->
+    <!-- {% if messages %}
+    <div id="flash-container" class="space-y-2">
+        {% for message in messages %}
+        <div class="flash-msg relative rounded-lg px-4 py-3 border
+          {% if message.tags == 'success' %} bg-green-50 border-green-200 text-green-800
+          {% elif message.tags == 'error' %} bg-red-50 border-red-200 text-red-800
+          {% elif message.tags == 'warning' %} bg-yellow-50 border-yellow-200 text-yellow-800
+          {% else %} bg-blue-50 border-blue-200 text-blue-800 {% endif %}">
+            {{ message }}
+            <button onclick="this.parentElement.remove()" class="absolute right-3 top-2 text-gray-600">×</button>
         </div>
-        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %} -->
 
-        {{ form.as_p }}
+    <!-- Main card -->
+    <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-100 mt-6">
 
-        <label class="block font-semibold">Photos</label>
-        <input type="file" name="images" multiple class="p-2 border rounded">
+        <form id="addListingForm" method="POST" enctype="multipart/form-data" class="grid" novalidate>
+            {% csrf_token %}
 
-        <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
-            Submit for Approval
-        </button>
-    </form>
+            <!-- Stepper header -->
+            <div class="flex items-center justify-between px-6 py-4 bg-gray-50 border-b">
+                <div class="flex gap-4 items-center">
+                    <div class="step-indicator flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-teal-500 text-white flex items-center justify-center font-semibold"
+                            data-step="1">1</div>
+                        <div class="text-sm text-gray-600">Basic</div>
+                    </div>
+                    <div class="step-indicator flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-semibold"
+                            data-step="2">2</div>
+                        <div class="text-sm text-gray-600">Location & Details</div>
+                    </div>
+                    <div class="step-indicator flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-semibold"
+                            data-step="3">3</div>
+                        <div class="text-sm text-gray-600">Photos & Submit</div>
+                    </div>
+                </div>
 
+                <div class="text-sm text-gray-500">Admin review required after submit</div>
+            </div>
+
+            <!-- Step 1: Basic -->
+            <div class="step-panel p-6" data-step="1">
+                <h3 class="text-lg font-semibold mb-3">Basic Information</h3>
+
+                {% if form.errors %}
+                <div class="bg-red-50 border border-red-200 text-red-800 p-3 rounded mb-4">
+                    <strong>There were errors — please check the fields below.</strong>
+                </div>
+                {% endif %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- rely on server form fields. We render common fields explicitly if available -->
+
+                    <!-- TITLE -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Title</label>
+                        {{ form.title }}
+                        {{ form.title.errors }}
+                    </div>
+                    <!-- RENT -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Rent (monthly)</label>
+                        {{ form.rent }}
+                        {{ form.rent.errors }}
+                    </div>
+                    <!-- DEPOSIT -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Deposit</label>
+                        {{ form.deposit }}
+                        {{ form.deposit.errors }}
+                    </div>
+
+                    <!-- AVAILABLE FROM -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Available From</label>
+                        {{ form.available_from }}
+                        {{ form.available_from.errors }}
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Description</label>
+                        {{ form.description }}
+                        {{ form.description.errors }}
+
+                        <p class="text-xs text-gray-400 mt-1">
+                            Add location details, who can live, rules, highlights etc.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button type="button"
+                        class="next-step inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+                        Continue
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Location & preferences -->
+            <div class="step-panel p-6 hidden" data-step="2">
+                <h3 class="text-lg font-semibold mb-3">Location & Preferences</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- ADDRESS -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Address</label>
+                        {{ form.address }}
+                        {{ form.address.errors }}
+                    </div>
+
+                    <!-- LAT / LNG -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Location (Lat / Lng)</label>
+                        <div class="flex gap-2">
+                            {{ form.latitude }}
+                            {{ form.longitude }}
+                        </div>
+                        <button id="geolocateBtn" type="button"
+                            class="mt-2 px-3 py-1 bg-gray-100 border rounded text-sm">
+                            Use my location
+                        </button>
+                        <p id="geoStatus" class="text-xs text-gray-400"></p>
+                    </div>
+
+                    <!-- GENDER -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Preferred Gender</label>
+                        {{ form.preferred_gender }}
+                        {{ form.preferred_gender.errors }}
+                    </div>
+
+                    <!-- OCCUPATION -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Preferred Occupation</label>
+                        {{ form.preferred_occupation }}
+                        {{ form.preferred_occupation.errors }}
+                    </div>
+
+                    <!-- AMENITIES -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Amenities</label>
+
+                        {% if form.amenities %}
+                        {{ form.amenities }}
+                        {% else %}
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+                            <label><input type="checkbox" name="amenities" value="wifi"> Wi-Fi</label>
+                            <label><input type="checkbox" name="amenities" value="ac"> AC</label>
+                            <label><input type="checkbox" name="amenities" value="parking"> Parking</label>
+                            <label><input type="checkbox" name="amenities" value="attached_bath"> Attached Bath</label>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <div class="flex justify-between mt-6">
+                    <button type="button"
+                        class="prev-step inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded">Back</button>
+                    <button type="button"
+                        class="next-step inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Photos & Submit -->
+            <div class="step-panel p-6 hidden" data-step="3">
+                <h3 class="text-lg font-semibold mb-3">Photos & Submit</h3>
+
+                <p class="text-sm text-gray-500 mb-3">Upload clear photos of the room and documents if required. Drag &
+                    drop supported.</p>
+
+                <!-- Drag & Drop / File input -->
+                <div id="dropZone"
+                    class="border-2 border-dashed border-gray-200 rounded p-4 text-center cursor-pointer">
+                    <input id="imagesInput" type="file" name="images" multiple accept="image/*" class="hidden">
+                    <div class="flex flex-col items-center justify-center">
+                        <svg class="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16 7l-4-4-4 4M12 3v13.5" />
+                        </svg>
+                        <div class="mt-2 text-sm text-gray-600">Drag images here, or <button type="button"
+                                id="pickFilesBtn" class="text-teal-600 underline">choose files</button></div>
+                        <div class="text-xs text-gray-400 mt-1">Recommended: 1200×800, JPEG/PNG</div>
+                    </div>
+                </div>
+
+                <!-- Preview thumbnails -->
+                <div id="thumbs" class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4"></div>
+
+                <div class="flex justify-between items-center mt-6">
+                    <div class="text-sm text-gray-500">You can edit details after submitting from Dashboard → My
+                        Listings.</div>
+
+                    <div class="flex gap-3">
+                        <button type="button"
+                            class="prev-step inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded">Back</button>
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 px-5 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">
+                            Submit for Approval
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
 </div>
+
+<!-- JS: Stepper, previews, drag-drop, geolocation, flash auto-hide -->
+<script>
+    // Helper to toggle steps
+    (function () {
+        const form = document.getElementById('addListingForm');
+        const panels = document.querySelectorAll('.step-panel');
+        const stepIndicators = document.querySelectorAll('.step-indicator > div[data-step]');
+        let current = 1;
+
+        function showStep(step) {
+            panels.forEach(p => p.classList.add('hidden'));
+            document.querySelector(`.step-panel[data-step="${step}"]`).classList.remove('hidden');
+
+            // update indicators
+            document.querySelectorAll('.step-indicator > div[data-step]').forEach(div => {
+                if (parseInt(div.dataset.step) <= step) {
+                    div.classList.remove('bg-gray-200', 'text-gray-600');
+                    div.classList.add('bg-teal-500', 'text-white');
+                } else {
+                    div.classList.add('bg-gray-200', 'text-gray-600');
+                    div.classList.remove('bg-teal-500', 'text-white');
+                }
+            });
+        }
+
+        document.querySelectorAll('.next-step').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (current < 3) { current++; showStep(current); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+            });
+        });
+
+        document.querySelectorAll('.prev-step').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (current > 1) { current--; showStep(current); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+            });
+        });
+
+        // initial show
+        showStep(current);
+
+        // Drag & Drop + File preview
+        const dropZone = document.getElementById('dropZone');
+        const imagesInput = document.getElementById('imagesInput');
+        const pickBtn = document.getElementById('pickFilesBtn');
+        const thumbs = document.getElementById('thumbs');
+
+        pickBtn.addEventListener('click', () => imagesInput.click());
+        dropZone.addEventListener('click', () => imagesInput.click());
+
+        ['dragenter', 'dragover'].forEach(evt => {
+            dropZone.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.add('bg-gray-50'); });
+        });
+        ['dragleave', 'dragend', 'drop'].forEach(evt => {
+            dropZone.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('bg-gray-50'); });
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            imagesInput.files = files;
+            showPreviews(files);
+        });
+
+        imagesInput.addEventListener('change', (e) => {
+            showPreviews(e.target.files);
+        });
+
+        function showPreviews(fileList) {
+            thumbs.innerHTML = '';
+            const files = Array.from(fileList).slice(0, 8); // limit to 8 thumbnails client-side
+            files.forEach((file, idx) => {
+                if (!file.type.startsWith('image/')) return;
+                const url = URL.createObjectURL(file);
+                const div = document.createElement('div');
+                div.className = 'relative rounded overflow-hidden border';
+                div.innerHTML = `
+          <img src="${url}" class="w-full h-36 object-cover">
+          <button data-idx="${idx}" class="absolute top-2 right-2 bg-black/50 text-white rounded px-1.5 text-xs">×</button>
+        `;
+                thumbs.appendChild(div);
+
+                div.querySelector('button').addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    // remove file from input (create a new DataTransfer)
+                    const dt = new DataTransfer();
+                    Array.from(imagesInput.files).forEach((f, i) => { if (i !== idx) dt.items.add(f); });
+                    imagesInput.files = dt.files;
+                    showPreviews(imagesInput.files);
+                });
+            });
+        }
+
+        // Geolocation
+        const geoBtn = document.getElementById('geolocateBtn');
+        const geoStatus = document.getElementById('geoStatus');
+        geoBtn?.addEventListener('click', () => {
+            if (!navigator.geolocation) { geoStatus.textContent = 'Geolocation not supported by your browser.'; return; }
+            geoStatus.textContent = 'Finding your location…';
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const lat = pos.coords.latitude.toFixed(6);
+                const lng = pos.coords.longitude.toFixed(6);
+                // fill into form fields if present
+                const latField = document.querySelector('input[name="latitude"]');
+                const lngField = document.querySelector('input[name="longitude"]');
+                if (latField && lngField) {
+                    latField.value = lat; lngField.value = lng;
+                    geoStatus.textContent = `Location set: ${lat}, ${lng}`;
+                } else {
+                    geoStatus.textContent = 'Latitude/Longitude fields not found in form.';
+                }
+            }, (err) => {
+                geoStatus.textContent = 'Could not get location. Allow permission or try again.';
+            }, { enableHighAccuracy: true, timeout: 10000 });
+        });
+
+        // Auto-hide flash messages
+        setTimeout(() => {
+            document.querySelectorAll('.flash-msg').forEach(msg => {
+                msg.style.transition = "opacity 0.4s, transform 0.4s";
+                msg.style.opacity = "0";
+                msg.style.transform = "translateY(-8px)";
+                setTimeout(() => msg.remove(), 450);
+            });
+        }, 3000);
+
+    })();
+</script>
+
+<style>
+    /* small polish for step indicator circles */
+    .step-indicator>div[data-step] {
+        transition: all .18s ease;
+    }
+
+    /* smooth thumbnail hover */
+    #thumbs img {
+        transition: transform .18s ease;
+    }
+
+    #thumbs img:hover {
+        transform: scale(1.03);
+    }
+</style>
+
 {% endblock %}
