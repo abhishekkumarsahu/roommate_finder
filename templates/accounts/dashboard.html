@@ -9,7 +9,7 @@
         <h2 class="text-3xl font-bold text-gray-800">Dashboard</h2>
 
         <a href="{% url 'accounts:profile' %}"
-           class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
             Edit Profile
         </a>
     </div>
@@ -63,8 +63,8 @@
 
             <div class="flex justify-between items-center mb-3">
                 <h3 class="text-xl font-semibold">My Listings</h3>
-                <a href="{% url 'listings:add_listing' %}"
-                   class="text-blue-600 hover:text-blue-800 underline">+ Add Listing</a>
+                <a href="{% url 'listings:add_listing' %}" class="text-blue-600 hover:text-blue-800 underline">+ Add
+                    Listing</a>
             </div>
 
             <div class="divide-y">
@@ -76,8 +76,7 @@
                         <p class="text-gray-500 text-sm">₹{{ l.rent }}</p>
                     </div>
 
-                    <a href="/listings/{{ l.id }}/"
-                       class="text-blue-500 hover:text-blue-700 text-sm underline">
+                    <a href="/listings/{{ l.id }}/" class="text-blue-500 hover:text-blue-700 text-sm underline">
                         View
                     </a>
                 </div>
@@ -95,17 +94,16 @@
             <div class="space-y-3">
 
                 {% for i in inquiries|slice:":3" %}
-                <div 
-                    onclick="window.location.href='{% url 'chat:chat_room' i.id %}'"
+                <div onclick='window.location.href="{% url "chat:chat_room" i.id %}"'
                     class="p-3 rounded-md border hover:shadow-md cursor-pointer transition">
 
                     <p class="font-medium">{{ i.listing.title }}</p>
                     <p class="text-gray-600 text-sm">
-                        With: 
+                        With:
                         {% if i.from_user == user %}
-                            {{ i.to_user.full_name }}
+                        {{ i.to_user.full_name }}
                         {% else %}
-                            {{ i.from_user.full_name }}
+                        {{ i.from_user.full_name }}
                         {% endif %}
                     </p>
                 </div>
@@ -115,9 +113,8 @@
 
             </div>
 
-            <a href="/chat/inbox/"
-               class="block mt-4 text-blue-600 underline text-center hover:text-blue-800">
-               View All Chats
+            <a href="/chat/inbox/" class="block mt-4 text-blue-600 underline text-center hover:text-blue-800">
+                View All Chats
             </a>
         </div>
 
@@ -132,8 +129,7 @@
                 <div class="p-3 rounded-md border hover:bg-gray-50 flex justify-between">
                     <p class="font-medium">{{ a.listing.title }}</p>
 
-                    <a href="/agreements/view/{{ a.id }}/"
-                       class="text-blue-600 hover:text-blue-800 text-sm underline">
+                    <a href="/agreements/view/{{ a.id }}/" class="text-blue-600 hover:text-blue-800 text-sm underline">
                         View
                     </a>
                 </div>
@@ -150,12 +146,12 @@
 
 <!-- Optional: Light fade-in animation -->
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".fade").forEach(el => {
-        el.style.opacity = 0;
-        setTimeout(() => { el.style.transition = "opacity .7s"; el.style.opacity = 1; }, 100);
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".fade").forEach(el => {
+            el.style.opacity = 0;
+            setTimeout(() => { el.style.transition = "opacity .7s"; el.style.opacity = 1; }, 100);
+        });
     });
-});
 </script>
 
 {% endblock %}
