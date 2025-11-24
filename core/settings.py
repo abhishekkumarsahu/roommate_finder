@@ -147,16 +147,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # mycode
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'roommate_finder',
-        'USER': 'roommate_user',
-        'PASSWORD': 'MyStrongPassword123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'roommate_finder',
+#         'USER': 'roommate_user',
+#         'PASSWORD': 'MyStrongPassword123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 # Email connection
 EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
@@ -175,3 +175,12 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 ALLOWED_HOSTS = ['*']   # Later add your Render hostname
 
+# New Database
+import dj_database_url
+DATABASES = {
+    "default": dj_database_url.config(
+        default=env("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True,
+    )
+}
