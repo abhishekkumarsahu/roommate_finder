@@ -1,6 +1,12 @@
+# create apt-packages with required system libs
+cat > apt-packages <<'EOF'
 build-essential
 pkg-config
 libcairo2
 libcairo2-dev
 python3-dev
 libffi-dev
+libpango1.0-dev
+libgirepository1.0-dev
+cairo-dbg
+EOF
