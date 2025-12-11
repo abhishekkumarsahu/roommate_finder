@@ -59,11 +59,32 @@
             <div class="step-panel p-6" data-step="1">
                 <h3 class="text-lg font-semibold mb-3">Basic Information</h3>
 
+                {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-200 text-red-800 p-3 rounded mb-4">
+                    {% for err in form.non_field_errors %}
+                    <div>{{ err }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 {% if form.errors %}
                 <div class="bg-red-50 border border-red-200 text-red-800 p-3 rounded mb-4">
                     <strong>There were errors — please check the fields below.</strong>
+                    <!-- optional: show all errors as a list for debugging -->
+                    <ul class="mt-2 text-sm">
+                        {% for field, errors in form.errors.items %}
+                        <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
                 {% endif %}
+
+
+                <!-- {% if form.errors %}
+                <div class="bg-red-50 border border-red-200 text-red-800 p-3 rounded mb-4">
+                    <strong>There were errors — please check the fields below. </strong>
+                </div>
+                {% endif %} -->
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- rely on server form fields. We render common fields explicitly if available -->
@@ -129,9 +150,12 @@
 
                     <!-- LAT / LNG -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Location (Lat / Lng)</label>
+                        <label class="block text-sm font-medium text-gray-700">Location (Latitude)</label>
                         <div class="flex gap-2">
                             {{ form.latitude }}
+                        </div>
+                        <label class="block text-sm font-medium text-gray-700">Location (Longitude)</label>
+                        <div class="flex gap-2">
                             {{ form.longitude }}
                         </div>
                         <button id="geolocateBtn" type="button"
@@ -187,7 +211,6 @@
 
                 <p class="text-sm text-gray-500 mb-3">Upload clear photos of the room and documents if required. Drag &
                     drop supported.</p>
-
                 <!-- Drag & Drop / File input -->
                 <div id="dropZone"
                     class="border-2 border-dashed border-gray-200 rounded p-4 text-center cursor-pointer">
