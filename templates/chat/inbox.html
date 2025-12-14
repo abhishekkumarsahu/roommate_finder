@@ -1,46 +1,102 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="max-w-4xl mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Chats / Interests</h2>
+<style>
+/* Subtle entrance animation */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.fade-up {
+    animation: fadeUp 0.5s ease-out both;
+}
+</style>
 
-    {% for inquiry in inquiries %}
-        <div class="p-4 bg-white shadow rounded mb-3">
-
-            <p class="font-bold text-lg">
-                {{ inquiry.listing.title }}
+<div class="max-w-5xl mx-auto px-6 py-10">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
+                Chats & Interests
+            </h2>
+            <p class="text-gray-500 mt-1">
+                Manage your conversations and agreements
             </p>
-
-            <p class="text-gray-600">
-                With:
-                {% if inquiry.from_user == user %}
-                    {{ inquiry.to_user.full_name }}
-                {% else %}
-                    {{ inquiry.from_user.full_name }}
-                {% endif %}
-            </p>
-
-            <div class="flex gap-4 mt-3">
-
-                <!-- Open Chat -->
-                <a href="{% url 'chat:chat_room' inquiry.id %}"
-                   class="text-blue-600 underline">
-                    Open Chat
-                </a>
-
-                <!-- Agreement Button -->
-                {% if inquiry.status == 'in_chat' %}
-                <a href="{% url 'agreements:start_agreement' inquiry.id %}"
-                   class="text-green-700 underline">
-                    Create Agreement
-                </a>
-                {% endif %}
-            </div>
-
         </div>
-    {% empty %}
-        <p>No interactions yet.</p>
-    {% endfor %}
+    </div>
+
+    <!-- List -->
+    <div class="space-y-5">
+        {% for inquiry in inquiries %}
+        <div
+            class="fade-up relative group bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+        >
+            <!-- Gradient Accent -->
+            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition"></div>
+
+            <div class="p-6">
+                <!-- Title + Status -->
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition">
+                        {{ inquiry.listing.title }}
+                    </h3>
+
+                    {% if inquiry.status == 'in_chat' %}
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+                        In Chat
+                    </span>
+                    {% endif %}
+                </div>
+
+                <!-- User -->
+                <p class="text-gray-600">
+                    With
+                    <span class="font-medium text-gray-800">
+                        {% if inquiry.from_user == user %}
+                            {{ inquiry.to_user.full_name }}
+                        {% else %}
+                            {{ inquiry.from_user.full_name }}
+                        {% endif %}
+                    </span>
+                </p>
+
+                <!-- Actions -->
+                <div class="flex flex-wrap gap-4 mt-6">
+                    <!-- Open Chat -->
+                    <a href="{% url 'chat:chat_room' inquiry.id %}"
+                       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-medium shadow hover:bg-indigo-700 hover:shadow-lg meansition transition-all duration-200">
+                        💬 Open Chat
+                    </a>
+
+                    <!-- Agreement -->
+                    {% if inquiry.status == 'in_chat' %}
+                    <a href="{% url 'agreements:start_agreement' inquiry.id %}"
+                       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-green-600 text-green-700 font-medium hover:bg-green-600 hover:text-white transition-all duration-200">
+                        📄 Create Agreement
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <!-- Empty State -->
+        <div class="text-center py-20">
+            <div class="text-6xl mb-4">💭</div>
+            <h3 class="text-xl font-semibold text-gray-800">
+                No interactions yet
+            </h3>
+            <p class="text-gray-500 mt-2">
+                When someone contacts you, it will appear here.
+            </p>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}
