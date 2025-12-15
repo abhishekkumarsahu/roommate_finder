@@ -2,274 +2,228 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Room Agreement – {{ listing.title }}</title>
+<title>Residential Tenancy Agreement – {{ listing.title }}</title>
 
 <style>
-/* -------- PAGE FORMATTING -------- */
 @page {
     size: A4;
-    margin: 30mm 18mm;
+    margin: 20mm;
 }
 
 body {
-    font-family: "Helvetica", Arial, sans-serif;
-    color: #1f2937;
-    font-size: 12px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 11.5px;
     line-height: 1.45;
+    color: #0f172a;
 }
 
-/* -------- HEADER -------- */
+/* COLORS (STATIC – PDF SAFE) */
+.brand { color: #2563eb; }
+.bg-light { background: #eff6ff; }
+.border { border: 1px solid #c7d2fe; }
+
+/* HEADER */
 .header {
-    width: 100%;
-    border-bottom: 3px solid #0ea5a4;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
 }
 
-.logo-box {
-    background: #0ea5a4;
-    color: white;
-    width: 60px;
-    height: 60px;
-    text-align: center;
-    line-height: 60px;
-    border-radius: 8px;
-    font-size: 22px;
-    font-weight: bold;
-    float:left;
-}
-
-.header-text {
-    margin-left: 80px;
-}
-
-.header-title {
-    font-size: 20px;
+.logo {
+    font-size: 16px;
     font-weight: bold;
 }
 
-.header-sub {
-    font-size: 12px;
-    color: #6b7280;
-}
-
-.right-header {
-    float: right;
+.meta {
+    font-size: 10px;
     text-align: right;
-    font-size: 12px;
-    margin-top: -50px;
 }
 
-/* -------- SECTION TITLE -------- */
+/* TITLE */
+h1 {
+    text-align: center;
+    font-size: 16px;
+    margin: 6px 0 2px;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 10px;
+    color: #475569;
+}
+
+/* SECTION */
 .section-title {
-    font-size: 15px;
-    color: #0b7285;
-    margin: 16px 0 6px;
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 4px 6px;
     font-weight: bold;
+    font-size: 12px;
+    margin-top: 8px;
 }
 
-/* -------- TABLES -------- */
-.table-box {
+/* TABLE */
+table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 4px;
 }
 
-.table-box td {
-    border: 1px solid #d1d5db;
-    padding: 8px;
-}
-
-.table-label {
-    background: #f3f4f6;
-    font-weight: bold;
-    width: 160px;
-}
-
-/* -------- PROFILE CARDS -------- */
-.card {
-    border: 1px solid #e5e7eb;
-    padding: 10px;
-    border-radius: 6px;
-    margin-top: 12px;
-    background: #ffffff;
-}
-
-.card-title {
-    font-size: 13px;
-    color: #0b7285;
-    font-weight: bold;
-    margin-bottom: 4px;
-}
-
-.small {
+td {
+    border: 1px solid #c7d2fe;
+    padding: 4px 6px;
     font-size: 11px;
-    color: #4b5563;
 }
 
-/* -------- DOCUMENT IMAGE -------- */
-.doc-img {
-    width: 140px;
-    height: 100px;
-    object-fit: cover;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
+.label {
+    width: 28%;
+    font-weight: bold;
+    background: #f8fafc;
 }
 
-/* -------- SIGNATURE AREA -------- */
-.signature-block {
-    margin-top: 40px;
+/* CLAUSES */
+.clauses p {
+    margin: 3px 0;
+    text-align: justify;
 }
 
-.sign-line {
-    width: 60%;
-    border-bottom: 2px solid #111827;
-    margin: 35px 0 5px;
+/* SIGNATURES */
+.sign-box {
+    border: 1px dashed #2563eb;
+    padding: 6px;
+    height: 50px;
+    font-size: 10px;
 }
 
-/* -------- FOOTER -------- */
+/* FOOTER */
 .footer {
-    margin-top: 30px;
-    font-size: 11px;
-    text-align: center;
-    color: #6b7280;
-    border-top: 1px dashed #dbeafe;
-    padding-top: 8px;
+    margin-top: 6px;
+    border-top: 1px solid #c7d2fe;
+    padding-top: 4px;
+    font-size: 9.5px;
 }
 </style>
 
 </head>
+
 <body>
 
 <!-- HEADER -->
 <div class="header">
-    <div class="logo-box">RF</div>
-
-    <div class="header-text">
-        <div class="header-title">Roommate Finder</div>
-        <div class="header-sub">Residential Tenancy Agreement</div>
+    <div class="logo">
+        🏠 RF <span>RoommateFinder</span>
     </div>
-
-    <div class="right-header">
-        <div><b>Agreement #:</b> AGR-{{ agreement.id }}</div>
-        <div><b>Date:</b> {{ agreement.created_at|date:"d M Y" }}</div>
+    <div class="meta">
+        Agreement No: AGR-{{ agreement.id }}<br>
+        Date: {{ agreement.created_at|date:"d M Y" }}
     </div>
 </div>
 
-<!-- MAIN TITLE -->
-<h2 style="text-align:center; color:#0b7285; margin-top:5px;">TENANCY / ROOM AGREEMENT</h2>
-<p style="text-align:center; font-size:11px; color:#475569;">
-    This agreement outlines the terms between the Owner and the Tenant for the listed property.
-</p>
+<h1>RESIDENTIAL TENANCY AGREEMENT</h1>
+<div class="subtitle">
+Governed under The Model Tenancy Act, 2021 (India)
+</div>
 
-<!-- LISTING SUMMARY -->
-<h3 class="section-title">Listing Summary</h3>
-
-<table class="table-box">
+<!-- PARTIES -->
+<div class="section">
+<div class="section-title">1. Parties</div>
+<table>
 <tr>
-    <td class="table-label">Listing</td>
-    <td>{{ listing.title }}</td>
-    <td class="table-label">Address</td>
-    <td>{{ listing.address }}</td>
+    <td class="label">Owner / Landlord</td>
+    <td>{{ listing.owner.full_name }} ({{ listing.owner.phone }})</td>
 </tr>
 <tr>
-    <td class="table-label">Rent (Monthly)</td>
-    <td>₹ {{ agreement.rent }}</td>
-    <td class="table-label">Deposit</td>
-    <td>₹ {{ agreement.deposit }}</td>
-</tr>
-<tr>
-    <td class="table-label">Agreement Period</td>
-    <td>{{ agreement.start_date }} → {{ agreement.end_date }}</td>
-    <td class="table-label">Occupancy Allowed</td>
-    <td>{{ listing.occupants_allowed|default:"1" }}</td>
+    <td class="label">Tenant</td>
+    <td>{{ agreement.tenant.full_name }} ({{ agreement.tenant.phone }})</td>
 </tr>
 </table>
+</div>
 
-<!-- OWNER / TENANT DETAILS -->
-<h3 class="section-title">Parties Involved</h3>
+<!-- PROPERTY -->
+<div class="section">
+<div class="section-title">2. Property & Financials</div>
+<table>
+<tr><td class="label">Property</td><td>{{ listing.title }}, {{ listing.address }}</td></tr>
+<tr><td class="label">Monthly Rent</td><td>₹ {{ agreement.rent }}</td></tr>
+<tr><td class="label">Security Deposit</td><td>₹ {{ agreement.deposit }}</td></tr>
+<tr><td class="label">Tenure</td><td>{{ agreement.start_date }} to {{ agreement.end_date }}</td></tr>
+<tr><td class="label">Occupancy Limit</td><td>{{ listing.occupants_allowed|default:"1" }}</td></tr>
+</table>
+</div>
 
-<table class="table-box">
+<!-- CLAUSES -->
+<div class="section clauses">
+<div class="section-title">3. Terms & Conditions</div>
+
+<p><b>3.1</b> The Tenant shall pay rent on or before the 5th day of each month.</p>
+<p><b>3.2</b> The security deposit shall be refundable upon vacating, subject to deductions.</p>
+<p><b>3.3</b> The premises shall be used for residential purposes only.</p>
+<p><b>3.4</b> Sub-letting is prohibited without written consent of the Owner.</p>
+<p><b>3.5</b> Either party may terminate this agreement with 30 days’ written notice.</p>
+<p><b>3.6</b> Maintenance of personal belongings shall be the Tenant’s responsibility.</p>
+<p><b>3.7</b> This agreement is compliant with the Model Tenancy Act, 2021.</p>
+</div>
+
+<!-- STAMP + QR -->
+<div class="section">
+<div class="section-title">4. Stamp Duty & Verification</div>
+<table>
 <tr>
-<td width="50%">
-    <div class="card">
-        <div class="card-title">Owner / Landlord</div>
-        <b>{{ listing.owner.full_name }}</b><br>
-        <div class="small">Email: {{ listing.owner.email }}</div>
-        <div class="small">Phone: {{ listing.owner.phone }}</div>
-
-        <div class="small" style="margin-top:8px;"><b>ID Document:</b></div>
-        {% if listing.owner.profile_photo %}
-            <img class="doc-img" src="{{ listing.owner.profile_photo.url }}">
-        {% else %}
-            <img class="doc-img" src="/static/default-id.png">
-        {% endif %}
-    </div>
-</td>
-
-<td width="50%">
-    <div class="card">
-        <div class="card-title">Tenant</div>
-        <b>{{ agreement.tenant.full_name }}</b><br>
-        <div class="small">Email: {{ agreement.tenant.email }}</div>
-        <div class="small">Phone: {{ agreement.tenant.phone }}</div>
-
-        <div class="small" style="margin-top:8px;"><b>ID Document:</b></div>
-        {% if agreement.tenant.profile_photo %}
-            <img class="doc-img" src="{{ agreement.tenant.profile_photo.url }}">
-        {% else %}
-            <img class="doc-img" src="/static/default-id.png">
-        {% endif %}
-    </div>
-</td>
+    <td class="label">Stamp Duty</td>
+    <td>As applicable under State Stamp Act</td>
+</tr>
+<tr>
+    <td class="label">QR Verification</td>
+    <td>
+        <img src="{{ agreement.qr_code_url }}" height="40">
+        <br>Scan to verify authenticity
+    </td>
 </tr>
 </table>
-
-<!-- AMENITIES -->
-<h3 class="section-title">Amenities</h3>
-<table class="table-box">
-<tr><td>
-{% if listing.amenities %}
-    {% for a in listing.amenities %}
-        • {{ a|title }}<br>
-    {% endfor %}
-{% else %}
-    No amenities added.
-{% endif %}
-</td></tr>
-</table>
-
-<!-- TERMS -->
-<h3 class="section-title">Agreement Clauses</h3>
-
-{% for line in agreement.clauses.splitlines %}
-<p style="margin-bottom:6px; text-align:justify;">{{ line }}</p>
-{% endfor %}
-
-<p style="margin-top:10px;">This agreement is governed by the laws of India.</p>
+</div>
 
 <!-- SIGNATURES -->
-<div class="signature-block">
-    <table class="table-box">
-    <tr>
-        <td>
-            <b>Owner Signature</b><br><br>
-            <div class="sign-line"></div>
+<div class="section signatures">
+<div class="section-title">5. Digital Signatures</div>
+<table>
+<tr>
+    <td width="33%">
+        <div class="sign-box">
+            Owner Signature<br><br>
             {{ listing.owner.full_name }}
-        </td>
-
-        <td>
-            <b>Tenant Signature</b><br><br>
-            <div class="sign-line"></div>
+        </div>
+    </td>
+    <td width="33%">
+        <div class="sign-box">
+            Tenant Signature<br><br>
             {{ agreement.tenant.full_name }}
-        </td>
-    </tr>
-    </table>
+        </div>
+    </td>
+    <td width="33%">
+        <div class="sign-box">
+            Platform Verification<br><br>
+            RoommateFinder
+        </div>
+    </td>
+</tr>
+</table>
+</div>
+
+<!-- WITNESS -->
+<div class="section">
+<div class="section-title">6. Witnesses</div>
+<table>
+<tr>
+    <td>Witness 1 Name & Signature</td>
+    <td>Witness 2 Name & Signature</td>
+</tr>
+</table>
 </div>
 
 <!-- FOOTER -->
 <div class="footer">
-    This document was generated by Roommate Finder — Please keep a copy for your records.
+    <span>Legally binding upon digital acceptance</span>
+    <span>Generated via RoommateFinder</span>
 </div>
 
 </body>
